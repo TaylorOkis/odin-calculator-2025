@@ -1,6 +1,9 @@
-let firstOperand;
-let secondOperand;
-let operator;
+let firstOperand = "";
+let secondOperand = "";
+let operator = "";
+let isSymbolInputted = false;
+
+let display = document.querySelector("input");
 
 function add(a, b) {
     return a + b;
@@ -19,37 +22,123 @@ function divide(a, b) {
 }
 
 function operate(firstOperand, secondOperand, operator) {
+    firstOperand = parseFloat(firstOperand);
+    secondOperand = parseFloat(secondOperand);
     switch (operator) {
         case "+":
-            add(firstOperand, secondOperand);
-            break;
+            return add(firstOperand, secondOperand);
         case "-":
-            subtract(firstOperand, secondOperand);
-            break;
+            return subtract(firstOperand, secondOperand);
         case "*":
-            multiply(firstOperand, secondOperand);
-            break;
+            return multiply(firstOperand, secondOperand);
         case "/":
-            divide(firstOperand, secondOperand);
-            break;
+            return divide(firstOperand, secondOperand);
         default:
             alert("Invalid Operator input");
             break;
     }
 }
 
+function getInputToDisplay(input, backspace = "") {
+    if (input === "toggle") {
+        if (isSymbolInputted && secondOperand !== "") {
+            if (secondOperand.startsWith("-")) {
+                secondOperand = secondOperand.slice(1);
+            } else {
+                secondOperand = "-" + secondOperand;
+            }
+            return secondOperand;
+        } else if (!isSymbolInputted && firstOperand !== "") {
+            if (firstOperand.startsWith("-")) {
+                firstOperand = firstOperand.slice(1);
+            } else {
+                firstOperand = "-" + firstOperand;
+            }
+            return firstOperand;
+        } else if (isSymbolInputted) {
+            return secondOperand;
+        } else {
+            return firstOperand;
+        }
+    } else if (isSymbolInputted && input === "percent") {
+        secondOperand = secondOperand / 100;
+        return secondOperand;
+    } else if (!isSymbolInputted && input === "percent") {
+        firstOperand = firstOperand / 100;
+        return firstOperand;
+    } else if (isSymbolInputted && backspace === "") {
+        return secondOperand += input;
+    } else if (isSymbolInputted && backspace === "bs") {
+        secondOperand = secondOperand.slice(0, -1);
+        return secondOperand
+    } else if (!isSymbolInputted && backspace === "") {
+        return firstOperand += input;
+    } else {
+        firstOperand = firstOperand.slice(0, -1);
+        return firstOperand;
+    }
+}
+
+function calculate(input = "") {
+    if (isSymbolInputted === false && firstOperand != "") {
+        operator = input;
+        isSymbolInputted = true;
+    } else {
+        if (secondOperand !== "") {
+            console.log(input);
+            let result = operate(firstOperand, secondOperand, operator);
+            firstOperand = result.toString();
+            operator = input;
+            secondOperand = "";
+            display.value = result;
+        }
+    }
+}
+
+function resetCalculator() {
+    firstOperand = "";
+    secondOperand = "";
+    isSymbolInputted = false;
+    operator = "";
+}
+
 let buttons = document.querySelectorAll("button");
 buttons.forEach(button => {
     button.addEventListener("click", (event) => {
         let input = event.target.id;
-        let display = document.querySelector("input");
+        console.log(input);
 
         if (input === "clear") {
-            display.value = ""
+            display.value = "";
+            resetCalculator();
         } else if (input === "bs") {
-            display.value = display.value.slice(0, -1);
+            display.value = getInputToDisplay("", input);
+        } else if (input === "+") {
+            calculate(input);
+        } else if (input === "-") {
+            calculate(input);
+        } else if (input === "*") {
+            calculate(input);
+        } else if (input === "/") {
+            calculate(input);
+        } else if (input === "equals") {
+            calculate();
+            resetCalculator();
+        } else if (input === ".") {
+            if (isSymbolInputted === false && firstOperand.includes(".")) {
+            } else if (isSymbolInputted === true && secondOperand.includes(".")) {
+
+            } else if (firstOperand === "" || secondOperand === "") {
+                display.value = getInputToDisplay("0" + input);
+            } else {
+                display.value = getInputToDisplay(input);
+            }
+        } else if (input === "percent") {
+            display.value = getInputToDisplay(input);
+        } else if (input === "toggle") {
+            display.value = getInputToDisplay(input);
         } else {
-            display.value += input;
+            display.value = getInputToDisplay(input);
         };
     });
 });
