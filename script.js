@@ -37,3 +37,19 @@ function operate(firstOperand, secondOperand, operator) {
             break;
     }
 }
+
+let buttons = document.querySelectorAll("button");
+buttons.forEach(button => {
+    button.addEventListener("click", (event) => {
+        let input = event.target.id;
+        let display = document.querySelector("input");
+
+        if (input === "clear") {
+            display.value = ""
+        } else if (input === "bs") {
+            display.value = display.value.slice(0, -1);
+        } else {
+            display.value += input;
+        };
+    });
+});
