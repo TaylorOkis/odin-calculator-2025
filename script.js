@@ -40,41 +40,39 @@ function operate(firstOperand, secondOperand, operator) {
 }
 
 function getInputToDisplay(input, backspace = "") {
-    if (input === "toggle") {
-        if (isSymbolInputted && secondOperand !== "") {
-            if (secondOperand.startsWith("-")) {
-                secondOperand = secondOperand.slice(1);
-            } else {
-                secondOperand = "-" + secondOperand;
+    if (isSymbolInputted) {
+        if (backspace === "bs") {
+            secondOperand = secondOperand.slice(0, -1);
+        } else if (input === "percent") {
+            secondOperand = secondOperand / 100;
+        } else if (input === "toggle") {
+            if (secondOperand !== "" && secondOperand !== "0") {
+                if (secondOperand.startsWith("-")) {
+                    secondOperand = secondOperand.slice(1);
+                } else {
+                    secondOperand = "-" + secondOperand;
+                }
             }
-            return secondOperand;
-        } else if (!isSymbolInputted && firstOperand !== "") {
-            if (firstOperand.startsWith("-")) {
-                firstOperand = firstOperand.slice(1);
-            } else {
-                firstOperand = "-" + firstOperand;
-            }
-            return firstOperand;
-        } else if (isSymbolInputted) {
-            return secondOperand;
         } else {
-            return firstOperand;
+            secondOperand += input;
         }
-    } else if (isSymbolInputted && input === "percent") {
-        secondOperand = secondOperand / 100;
         return secondOperand;
-    } else if (!isSymbolInputted && input === "percent") {
-        firstOperand = firstOperand / 100;
-        return firstOperand;
-    } else if (isSymbolInputted && backspace === "") {
-        return secondOperand += input;
-    } else if (isSymbolInputted && backspace === "bs") {
-        secondOperand = secondOperand.slice(0, -1);
-        return secondOperand
-    } else if (!isSymbolInputted && backspace === "") {
-        return firstOperand += input;
     } else {
-        firstOperand = firstOperand.slice(0, -1);
+        if (backspace === "bs") {
+            firstOperand = firstOperand.slice(0, -1);
+        } else if (input === "percent") {
+            firstOperand = firstOperand / 100;
+        } else if (input === "toggle") {
+            if (firstOperand !== "" && firstOperand !== "0") {
+                if (firstOperand.startsWith("-")) {
+                    firstOperand = firstOperand.slice(1);
+                } else {
+                    firstOperand = "-" + firstOperand;
+                }
+            }
+        } else {
+            firstOperand += input;
+        }
         return firstOperand;
     }
 }
@@ -85,7 +83,6 @@ function calculate(input = "") {
         isSymbolInputted = true;
     } else {
         if (secondOperand !== "") {
-            console.log(input);
             let result = operate(firstOperand, secondOperand, operator);
             firstOperand = result.toString();
             operator = input;
@@ -106,7 +103,6 @@ let buttons = document.querySelectorAll("button");
 buttons.forEach(button => {
     button.addEventListener("click", (event) => {
         let input = event.target.id;
-        console.log(input);
 
         if (input === "clear") {
             display.value = "";
