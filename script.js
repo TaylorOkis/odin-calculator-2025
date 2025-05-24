@@ -19,7 +19,13 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-    return a / b;
+    if (b === 0) {
+        alert("Can't divide by zero");
+        resetCalculator();
+        return "infinity";
+    } else {
+        return a / b;
+    }
 }
 
 function operate(firstOperand, secondOperand, operator) {
@@ -47,7 +53,9 @@ function getInputToDisplay(input, backspace = "") {
         } else {
             if (!(secondOperand.length >= maxLength)) {
                 if (input === "percent") {
-                    secondOperand = (secondOperand / 100).toString();
+                    if (secondOperand !== "" && secondOperand !== "0") {
+                        secondOperand = (secondOperand / 100).toString();
+                    }
                 } else if (input === "toggle") {
                     if (secondOperand !== "" && secondOperand !== "0") {
                         if (secondOperand.startsWith("-")) {
@@ -68,7 +76,9 @@ function getInputToDisplay(input, backspace = "") {
         } else {
             if (!(firstOperand.length >= maxLength)) {
                 if (input === "percent") {
-                    firstOperand = (firstOperand / 100).toString();
+                    if (firstOperand !== "" && firstOperand !== "0") {
+                        firstOperand = (firstOperand / 100).toString();
+                    }
                 } else if (input === "toggle") {
                     if (firstOperand !== "" && firstOperand !== "0") {
                         if (firstOperand.startsWith("-")) {
@@ -93,20 +103,17 @@ function calculate(input = "") {
     } else {
         if (secondOperand !== "") {
             let result = operate(firstOperand, secondOperand, operator);
-            result = formatToMaxLength(result);
-            firstOperand = result;
-            operator = input;
-            secondOperand = "";
-            display.value = result;
+            if (result !== "infinity") {
+                result = formatToMaxLength(result);
+                firstOperand = result;
+                operator = input;
+                secondOperand = "";
+                display.value = result;
+            } else {
+                display.value = "";
+            }
         }
     }
-}
-
-function resetCalculator() {
-    firstOperand = "";
-    secondOperand = "";
-    isSymbolInputted = false;
-    operator = "";
 }
 
 function formatToMaxLength(number) {
@@ -126,6 +133,13 @@ function formatToMaxLength(number) {
     }
 
     return number.toExponential(maxLength - 6);
+}
+
+function resetCalculator() {
+    firstOperand = "";
+    secondOperand = "";
+    isSymbolInputted = false;
+    operator = "";
 }
 
 let buttons = document.querySelectorAll("button");
@@ -149,9 +163,6 @@ buttons.forEach(button => {
         } else if (input === "equals") {
             calculate();
             isSymbolInputted = false;
-            if (firstOperand !== "" && secondOperand !== "") {
-                resetCalculator();
-            }
         } else if (input === ".") {
             if (isSymbolInputted === false && firstOperand.includes(".")) {
             } else if (isSymbolInputted === true && secondOperand.includes(".")) {
@@ -167,10 +178,6 @@ buttons.forEach(button => {
             display.value = getInputToDisplay(input);
         } else {
             display.value = getInputToDisplay(input);
-        };
-
-        console.log(`firstOperand: ${firstOperand}`);
-        console.log(`secondOperand: ${secondOperand}`);
-        console.log(`operator: ${operator}`);
+        }
     });
 });
