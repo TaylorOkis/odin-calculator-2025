@@ -64,6 +64,14 @@ function getInputToDisplay(input, backspace = "") {
                             secondOperand = "-" + secondOperand;
                         }
                     }
+                } else if (input === ".") {
+                    if (!secondOperand.includes(".")) {
+                        if (secondOperand === "") {
+                            secondOperand = "0" + input;
+                        } else {
+                            secondOperand += input;
+                        }
+                    }
                 } else {
                     secondOperand += input;
                 }
@@ -85,6 +93,14 @@ function getInputToDisplay(input, backspace = "") {
                             firstOperand = firstOperand.slice(1);
                         } else {
                             firstOperand = "-" + firstOperand;
+                        }
+                    }
+                } else if (input === ".") {
+                    if (!firstOperand.includes(".")) {
+                        if (firstOperand === "") {
+                            firstOperand = "0" + input;
+                        } else {
+                            firstOperand += input;
                         }
                     }
                 } else {
@@ -164,20 +180,13 @@ buttons.forEach(button => {
             calculate();
             isSymbolInputted = false;
         } else if (input === ".") {
-            if (isSymbolInputted === false && firstOperand.includes(".")) {
-            } else if (isSymbolInputted === true && secondOperand.includes(".")) {
-
-            } else if (firstOperand === "" || secondOperand === "") {
-                display.value = getInputToDisplay("0" + input);
-            } else {
-                display.value = getInputToDisplay(input);
-            }
+            display.value = getInputToDisplay(input);
         } else if (input === "percent") {
             display.value = getInputToDisplay(input);
         } else if (input === "toggle") {
             display.value = getInputToDisplay(input);
         } else {
             display.value = getInputToDisplay(input);
-        }
+        };
     });
 });
